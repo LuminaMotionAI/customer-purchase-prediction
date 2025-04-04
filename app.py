@@ -114,13 +114,41 @@ with tab2:
     results_df = X_test.copy()
     results_df['actual'] = X_test.index.map(processed_data['target'].to_dict())
     results_df['predicted'] = predictions
-    
-    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # 혼동 행렬을 계산합니다
     conf_matrix = pd.crosstab(results_df['actual'], results_df['predicted'], 
                               rownames=['Actual'], colnames=['Predicted'], 
                               normalize='index')
-    sns.heatmap(conf_matrix, annot=True, fmt='.1%', cmap='Blues', ax=ax, annot_kws={"size": 14})
+
+    # 대안 1: 혼동 행렬을 표로 표시 (가장 깔끔한 방법)
+    st.write("#### 혼동 행렬 (정규화된 %)")
+    # 퍼센트로 변환하여 표시
+    conf_percent = conf_matrix.mul(100).round(1).astype(str) + '%'
+    st.dataframe(conf_percent, use_container_width=True)
+
+    # 대안 2: 히트맵 그리기 (텍스트 없이)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.heatmap(conf_matrix, cmap='Blues', ax=ax, annot=False, cbar=True)
+    ax.set_xlabel('Predicted', fontsize=12)
+    ax.set_ylabel('Actual', fontsize=12)
+    ax.set_xticklabels(['0', '1'])
+    ax.set_yticklabels(['0', '1'])
     st.pyplot(fig)
+
+    # 혼동 행렬 해석 추가
+    st.write("#### 혼동 행렬 해석:")
+    true_negative = conf_matrix.iloc[0, 0] if 0 in conf_matrix.index and 0 in conf_matrix.columns else 0
+    false_positive = conf_matrix.iloc[0, 1] if 0 in conf_matrix.index and 1 in conf_matrix.columns else 0
+    false_negative = conf_matrix.iloc[1, 0] if 1 in conf_matrix.index and 0 in conf_matrix.columns else 0
+    true_positive = conf_matrix.iloc[1, 1] if 1 in conf_matrix.index and 1 in conf_matrix.columns else 0
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("정확히 예측한 비구매 (True Negative)", f"{true_negative:.1%}")
+        st.metric("잘못 예측한 구매 (False Positive)", f"{false_positive:.1%}")
+    with col2:
+        st.metric("잘못 예측한 비구매 (False Negative)", f"{false_negative:.1%}")
+        st.metric("정확히 예측한 구매 (True Positive)", f"{true_positive:.1%}")
 
 # 탭 3: 특성 중요도
 with tab3:
