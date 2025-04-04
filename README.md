@@ -78,7 +78,7 @@ python -m streamlit run app.py
 ## 🌐 Streamlit 배포 링크
 이 프로젝트는 Streamlit Cloud에 배포되어 있습니다. 아래 링크를 통해 대시보드를 실시간으로 확인할 수 있습니다:
 
-[구매 예측 분석 대시보드](https://customer-purchase-prediction.streamlit.app/)
+[구매 예측 분석 대시보드](https://customer-purchase-prediction1.streamlit.app/)
 
 ## 📊 대시보드 기능
 - **데이터 개요**: 샘플 데이터, 전처리된 데이터, 생성된 특성, 시간대별 페이지 체류 시간 시각화
