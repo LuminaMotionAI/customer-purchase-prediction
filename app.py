@@ -115,11 +115,11 @@ with tab2:
     results_df['actual'] = X_test.index.map(processed_data['target'].to_dict())
     results_df['predicted'] = predictions
     
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 8))
     conf_matrix = pd.crosstab(results_df['actual'], results_df['predicted'], 
                               rownames=['Actual'], colnames=['Predicted'], 
                               normalize='index')
-    sns.heatmap(conf_matrix, annot=True, fmt='.2%', cmap='Blues', ax=ax)
+    sns.heatmap(conf_matrix, annot=True, fmt='.1%', cmap='Blues', ax=ax, annot_kws={"size": 14})
     st.pyplot(fig)
 
 # 탭 3: 특성 중요도
