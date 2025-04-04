@@ -78,14 +78,28 @@ tab1, tab2, tab3 = st.tabs(["데이터 개요", "모델 성능", "특성 중요�
 
 # 탭 1: 데이터 개요
 with tab1:
-    st.header("샘플 데이터")
-    st.dataframe(data.head(10))
+    st.header("데이터 탐색")
     
-    st.header("전처리된 데이터")
-    st.dataframe(processed_data.head(10))
+    # 상위 몇 개의 행 보기
+    st.subheader("데이터 샘플")
+    st.dataframe(processed_data.head())
     
-    st.header("생성된 특성")
-    st.dataframe(feature_data.head(10))
+    # 기본 통계량 보기
+    st.subheader("기본 통계량")
+    st.dataframe(processed_data.describe())
+    
+    # 데이터 인사이트 추가
+    st.subheader("데이터 인사이트")
+    st.markdown("""
+    📊 **주요 발견:**
+    - 이 데이터셋은 고객별 특성과 구매 여부를 포함하고 있습니다.
+    - 기본 통계량을 통해 각 특성의 분포를 파악할 수 있습니다.
+    - 특성들 간의 편차가 있으므로, 모델링 전에 정규화/표준화 작업이 적용되었습니다.
+    
+    💡 **활용 방안:**
+    - 특성들의 분포를 파악하여 마케팅 타겟팅의 기준점으로 활용할 수 있습니다.
+    - 이상치(outlier)가 있는지 확인하고 데이터 품질을 개선할 수 있습니다.
+    """)
     
     # 시간대별 페이지 체류 시간 시각화
     st.subheader("시간대별 평균 페이지 체류 시간")
@@ -102,12 +116,33 @@ with tab1:
 
 # 탭 2: 모델 성능
 with tab2:
-    st.header("모델 성능 지표")
+    st.header("모델 성능")
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("F1 Score", f"{metrics['f1_score']:.4f}")
-    col2.metric("Precision", f"{metrics['precision']:.4f}")
-    col3.metric("Recall", f"{metrics['recall']:.4f}")
+    # 성능 지표 보여주기
+    st.subheader("성능 지표")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("정확도(Accuracy)", f"{metrics['accuracy']:.2f}")
+    with col2:
+        st.metric("정밀도(Precision)", f"{metrics['precision']:.2f}")
+    with col3:
+        st.metric("재현율(Recall)", f"{metrics['recall']:.2f}")
+    with col4:
+        st.metric("F1 점수", f"{metrics['f1_score']:.2f}")
+    
+    # 성능 지표 인사이트 추가
+    st.markdown("""
+    📊 **모델 성능 해석:**
+    - **정확도(Accuracy)**: 전체 예측 중 올바른 예측의 비율입니다. 높을수록 좋습니다.
+    - **정밀도(Precision)**: 구매로 예측한 고객 중 실제로 구매한 고객의 비율입니다. 마케팅 비용 최적화에 중요합니다.
+    - **재현율(Recall)**: 실제 구매 고객 중 모델이 정확히 식별한 비율입니다. 잠재 고객을 놓치지 않는데 중요합니다.
+    - **F1 점수**: 정밀도와 재현율의 조화평균으로, 두 지표 간의 균형을 나타냅니다.
+    
+    💡 **비즈니스 인사이트:**
+    - 재현율이 낮다면 실제 구매 가능성이 있는 고객을 놓치고 있을 수 있습니다.
+    - 정밀도가 낮다면 마케팅 비용이 효율적으로 사용되지 않고 있을 수 있습니다.
+    - 이 모델의 성능을 기반으로 마케팅 전략을 조정할 수 있습니다.
+    """)
     
     # 예측 결과 시각화
     st.subheader("실제 값과 예측 값 비교")
@@ -152,6 +187,20 @@ with tab2:
     with col2:
         st.metric("잘못 예측한 비구매 (False Negative)", f"{false_negative:.1%}")
         st.metric("정확히 예측한 구매 (True Positive)", f"{true_positive:.1%}")
+    
+    # 혼동 행렬 인사이트 추가
+    st.markdown("""
+    📊 **혼동 행렬 인사이트:**
+    - **True Negative**: 구매하지 않을 고객을 정확히 예측한 비율입니다. 마케팅 비용 절감에 도움이 됩니다.
+    - **False Positive**: 구매하지 않을 고객을 구매할 것으로 잘못 예측한 비율입니다. 이는 마케팅 예산 낭비를 의미합니다.
+    - **False Negative**: 실제 구매 고객을 놓친 비율입니다. 이는 잠재적 매출 손실을 의미합니다.
+    - **True Positive**: 실제 구매 고객을 정확히 예측한 비율입니다. 효과적인 마케팅 타겟팅을 나타냅니다.
+    
+    💡 **비즈니스 시사점:**
+    - False Positive 비율이 높으면 마케팅 예산 낭비가 발생합니다.
+    - False Negative 비율이 높으면 매출 기회를 놓치게 됩니다.
+    - 이 정보를 바탕으로 마케팅 전략을 최적화하여 ROI를 향상시킬 수 있습니다.
+    """)
 
 # 탭 3: 특성 중요도
 with tab3:
@@ -173,6 +222,25 @@ with tab3:
     
     st.subheader("특성 중요도 데이터")
     st.dataframe(importance_df)
+    
+    # 특성 중요도 인사이트 추가
+    st.subheader("특성 중요도 인사이트")
+    
+    # 중요 특성 추출 (상위 3개)
+    top_features = importance_df.head(3)['Feature'].tolist()
+    top_features_str = ', '.join([f"**{f}**" for f in top_features])
+    
+    st.markdown(f"""
+    📊 **주요 발견:**
+    - 상위 중요 특성은 {top_features_str}입니다.
+    - 이 특성들이 모델의 예측 결과에 가장 큰 영향을 미칩니다.
+    
+    💡 **비즈니스 활용 방안:**
+    - 중요도가 높은 특성에 집중하여 마케팅 메시지를 개발할 수 있습니다.
+    - 제품 개발 및 서비스 개선 시 이러한 중요 특성을 고려할 수 있습니다.
+    - 고객 세그먼트 정의에 이 특성들을 활용하여 더 정교한 타겟팅이 가능합니다.
+    - 데이터 수집 시 이러한 중요 특성에 관련된 정보를 우선적으로 확보할 필요가 있습니다.
+    """)
 
 # 푸터
 st.markdown("---")
