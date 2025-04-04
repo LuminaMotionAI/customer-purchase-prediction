@@ -41,7 +41,7 @@ def generate_sample_data(n_samples, seed=42):
     })
 
 # 데이터 및 모델 처리
-@st.cache_resource
+@st.cache_resource(ttl=3600, max_entries=10)
 def process_data_and_model(data):
     # 데이터 처리기와 모델 초기화
     data_processor = DataProcessor()
