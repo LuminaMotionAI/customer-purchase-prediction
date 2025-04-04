@@ -118,11 +118,16 @@ with tab1:
 with tab2:
     st.header("모델 성능")
     
+    # 정확도 계산 추가 (없는 경우)
+    # 예측 결과와 실제 값을 사용하여 정확도 계산
+    y_pred_binary = (predictions > 0.5).astype(int)
+    accuracy = (y_pred_binary == X_test.index.map(processed_data['target'].to_dict())).mean()
+    
     # 성능 지표 보여주기
     st.subheader("성능 지표")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("정확도(Accuracy)", f"{metrics['accuracy']:.2f}")
+        st.metric("정확도(Accuracy)", f"{accuracy:.2f}")
     with col2:
         st.metric("정밀도(Precision)", f"{metrics['precision']:.2f}")
     with col3:
