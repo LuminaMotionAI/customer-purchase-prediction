@@ -131,6 +131,9 @@ with tab2:
     sns.heatmap(conf_matrix, cmap='Blues', ax=ax, annot=False, cbar=True)
     ax.set_xlabel('Predicted', fontsize=12)
     ax.set_ylabel('Actual', fontsize=12)
+    # 틱 위치 명시적으로 설정
+    ax.set_xticks([0.5, 1.5])
+    ax.set_yticks([0.5, 1.5])
     ax.set_xticklabels(['0', '1'])
     ax.set_yticklabels(['0', '1'])
     st.pyplot(fig)
