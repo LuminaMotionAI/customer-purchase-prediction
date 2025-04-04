@@ -18,6 +18,8 @@ st.set_page_config(
 st.title("구매 예측 분석 대시보드")
 st.markdown("""
 이 대시보드는 사용자 행동 데이터를 기반으로 구매 가능성을 예측하는 모델의 결과를 시각화합니다.
+
+[구매 예측 분석 대시보드](https://customer-purchase-prediction1.streamlit.app/)
 """)
 
 # 사이드바
